@@ -1,6 +1,8 @@
 from django.test import TestCase  # noqa F401
 from django.urls import resolve, reverse
 
+from . import views
+
 # Create your tests here.
 
 
@@ -25,4 +27,4 @@ class RecipeURLsTest(TestCase):
 class RecipeViewsTest(TestCase):
     def test_recipe_home_views_function_is_correct(self):
         view = resolve('/')
-        self.assertTrue(True)
+        self.assertIs(view.func, views.home)

@@ -1,5 +1,5 @@
 from django.shortcuts import get_list_or_404, get_object_or_404, render
-from utils.recipes.factory import make_recipe
+from utils.recipes.factory import make_recipe  # noqa F401
 
 from recipes.models import Recipe
 

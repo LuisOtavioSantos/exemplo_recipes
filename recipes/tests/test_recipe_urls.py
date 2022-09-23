@@ -4,7 +4,7 @@ from django.urls import reverse
 
 class RecipeURLsTest(TestCase):
     def test_the_pytest_is_ok(self):
-        print('Caguei')
+        print('Testes do Django')
         assert 1 == 1
 
     def test_recipe_home_url_is_correct(self):

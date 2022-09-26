@@ -1,4 +1,4 @@
-from unittest import skip
+# from unittest import skip
 
 from django.test import TestCase  # noqa F401
 from django.urls import resolve, reverse
@@ -24,12 +24,12 @@ class RecipeViewsTest(RecipeTestBase):
         response = self.client.get(reverse(viewname='recipes:home'))  # noqa F841
         self.assertTemplateUsed(response, 'recipes/pages/home.html')
 
-    @skip('Skip this test')
+    # @skip('Skip this test') # skipa o teste
     def test_recipe_home_template_shows_no_recipe_if_no_recipes(self):
         # Recipe.objects.get(pk=1).delete()
         response = self.client.get(reverse(viewname='recipes:home'))  # noqa F841
         self.assertIn('No recipes found', response.content.decode('utf-8'))
-        self.fail('Failure')
+        # self.fail('Failure')  # manda o teste falhar de propósito
 
     def test_recipe_home_template_loads_recipes(self):
         self.make_recipe()

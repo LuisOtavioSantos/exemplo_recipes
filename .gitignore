@@ -127,3 +127,7 @@ _local_settings.py
 
 # Add again for course purpose
 !db.sqlite3
+
+
+# coverage
+htmlcov

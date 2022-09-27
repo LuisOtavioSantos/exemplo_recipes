@@ -113,3 +113,9 @@ class RecipeViewsTest(RecipeTestBase):
         url = reverse(viewname='recipes:search')
         response = self.client.get(url)
         self.assertTemplateUsed(response, 'recipes/pages/search.html')
+
+    def test_recipe_search_raises_404_if_no_search_term(self):
+        # o teste passa pois a view retorna uma query/search_term none por padrão
+        url = reverse(viewname='recipes:search')
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 404)

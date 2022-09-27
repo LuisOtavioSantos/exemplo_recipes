@@ -1,3 +1,4 @@
+from django.http import Http404
 from django.shortcuts import get_list_or_404, get_object_or_404, render
 from utils.recipes.factory import make_recipe  # noqa F401
 
@@ -7,7 +8,7 @@ from recipes.models import Recipe
 def home(request):
     recipes = Recipe.objects.filter(
         is_published=True
-    ).order_by('-id')
+    ).order_by('id')
     # recipes = get_list_or_404(
     #     Recipe.objects.filter(
     #         is_published=True,
@@ -46,4 +47,7 @@ def recipe(request, id):
 
 
 def search(request):
+    search_term = request.GET.get('q')
+    if not search_term:
+        raise Http404()
     return render(request=request, template_name='recipes/pages/search.html')

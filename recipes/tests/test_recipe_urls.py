@@ -18,3 +18,10 @@ class RecipeURLsTest(TestCase):
     def test_recipes_recipe_url_is_correct(self):
         url = reverse(viewname='recipes:recipe', kwargs={'id': 1})
         self.assertEqual(url, '/recipes/1/')
+
+    def test_recipe_search_url_is_correct(self):
+        # não precisa passar argumento pois se trata de uma query string
+        url = reverse(viewname='recipes:search')
+        self.assertEqual(url, '/recipes/search/')
+
+# RED - GREEN - REFACTOR

@@ -52,5 +52,5 @@ def search(request):
         raise Http404()
     return render(request=request, template_name='recipes/pages/search.html',
                   context={
-                      'page_title': f'Search for {search_term}'
+                      'page_title': f'Search for "{search_term}"'
                   })

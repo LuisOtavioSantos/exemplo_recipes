@@ -1,9 +1,10 @@
 from django.db.models import Q
 from django.http import Http404
 from django.shortcuts import get_list_or_404, get_object_or_404, render
-from utils.recipes.factory import make_recipe  # noqa F401
 
 from recipes.models import Recipe
+
+# from utils.recipes.factory import make_recipe  # noqa F401
 
 
 def home(request):

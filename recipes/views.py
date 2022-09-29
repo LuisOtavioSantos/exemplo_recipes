@@ -53,11 +53,32 @@ def search(request):
         raise Http404()
     # OR no django
     recipes = Recipe.objects.filter(
-        Q(title__icontains=search_term) |
-        Q(description__icontains=search_term),
+        Q(
+            Q(title__icontains=search_term) |
+            Q(description__icontains=search_term),
+        ),
+        is_published=True
     ).order_by('id')
     return render(request=request, template_name='recipes/pages/search.html',
                   context={
                       'page_title': f'Search for "{search_term}"',
                       'recipes': recipes,
                   })
+
+
+# def search(request):
+#     search_term = request.GET.get('q', '').strip()
+#     if not search_term:
+#         raise Http404()
+#     # OR no django
+#     recipes = Recipe.objects.filter(
+#         Q(title__icontains=search_term) |
+#         Q(description__icontains=search_term),
+#     )
+#     recipes = recipes.order_by('id')
+#     recipes = recipes.filter(is_published=True)
+#     return render(request=request, template_name='recipes/pages/search.html',
+#                   context={
+#                       'page_title': f'Search for "{search_term}"',
+#                       'recipes': recipes,
+#                   })

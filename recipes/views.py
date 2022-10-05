@@ -1,3 +1,5 @@
+import os
+
 from django.db.models import Q
 from django.http import Http404
 from django.shortcuts import get_list_or_404, get_object_or_404, render
@@ -6,6 +8,7 @@ from utils.pagination import make_pagination
 from recipes.models import Recipe
 
 # from utils.recipes.factory import make_recipe  # noqa F401
+PER_PAGES = os.environ.get('PER_PAGE', 6)
 
 
 def home(request):
@@ -14,7 +17,7 @@ def home(request):
     ).order_by('id')
     # paginator recebe as receitas filtradas no model Recipes
     page_obj, pagination_range = make_pagination(
-        request=request, recipes=recipes, perpage=9)
+        request=request, recipes=recipes, perpage=PER_PAGES)
     return render(request, 'recipes/pages/home.html', context={
         'recipes': page_obj,
         'pagination_range': pagination_range,
@@ -29,7 +32,7 @@ def category(request, category_id):
         ).order_by('-id')
     )
     page_obj, pagination_range = make_pagination(
-        request=request, recipes=recipes, perpage=9)
+        request=request, recipes=recipes, perpage=PER_PAGES)
     return render(request, 'recipes/pages/category.html', context={
         'recipes': page_obj,
         'title': f'{page_obj[0].category.name} - Category | ',
@@ -63,7 +66,7 @@ def search(request):
         is_published=True
     ).order_by('id')
     page_obj, pagination_range = make_pagination(
-        request=request, recipes=recipes, perpage=9)
+        request=request, recipes=recipes, perpage=PER_PAGES)
     return render(request=request, template_name='recipes/pages/search.html',
                   context={
                       'page_title': f'Search for "{search_term}"',

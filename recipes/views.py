@@ -1,7 +1,8 @@
-from django.core.paginator import Paginator
+from django.core.paginator import EmptyPage, InvalidPage, Paginator
 from django.db.models import Q
 from django.http import Http404
 from django.shortcuts import get_list_or_404, get_object_or_404, render
+from utils.pagination import make_pagination_range
 
 from recipes.models import Recipe
 
@@ -9,6 +10,12 @@ from recipes.models import Recipe
 
 
 def home(request):
+    try:
+        current_page = int(request.GET.get('page', 1))
+    except Exception as e:
+        current_page = 1
+        print(e)
+
     recipes = Recipe.objects.filter(
         is_published=True
     ).order_by('id')
@@ -17,15 +24,23 @@ def home(request):
     #         is_published=True,
     #     ).order_by('-id')
     # )
+    # paginator recebe as receitas filtradas no model Recipes
+    paginator = Paginator(object_list=recipes, per_page=9)
     try:
-        current_page = request.GET.get('page', 1)
-    except Exception as e:
-        print(e)
-        current_page = 1
-    paginator = Paginator(recipes, 9)
-    page_obj = paginator.get_page(current_page)
+        # Aqui os dois casam a response da request com o paginator
+        page_obj = paginator.get_page(current_page)
+    except (EmptyPage, InvalidPage):
+        page_obj = paginator.page(paginator.num_pages)
+
+    pagination_range = make_pagination_range(
+        page_range=paginator.page_range,
+        qty_pages=4,
+        current_page=current_page
+    )
+
     return render(request, 'recipes/pages/home.html', context={
         'recipes': page_obj,
+        'pagination_range': pagination_range,
     })
 
 

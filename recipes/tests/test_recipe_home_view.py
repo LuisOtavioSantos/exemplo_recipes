@@ -1,5 +1,7 @@
 # from unittest import skip
 
+from unittest.mock import patch
+
 from django.test import TestCase  # noqa F401
 from django.urls import resolve, reverse
 from recipes import views
@@ -48,3 +50,18 @@ class RecipeHomeViewTest(RecipeTestBase):
         self.make_recipe(is_published=False)
         response = self.client.get(reverse('recipes:home'))
         self.assertIn('No recipes found', response.content.decode('utf-8'))
+
+    # @patch('recipes.views.PER_PAGES', new=3)
+    def test_recipe_home_is_paginated(self):
+
+        for i in range(9):
+            kwargs = {'slug': f'r{i}', 'author_data': {'username': f'u{i}'}}
+            self.make_recipe(**kwargs)
+
+        with patch('recipes.views.PER_PAGES', new=3):
+            url = reverse('recipes:home')
+            response = self.client.get(url)
+            # app_name = request.resolver_match.app_name
+            recipes = response.context['recipes']
+            paginator = recipes.paginator
+            self.assertEqual(paginator.num_pages, 3)

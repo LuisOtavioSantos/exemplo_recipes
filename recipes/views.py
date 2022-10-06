@@ -8,7 +8,9 @@ from utils.pagination import make_pagination
 from recipes.models import Recipe
 
 # from utils.recipes.factory import make_recipe  # noqa F401
-PER_PAGES = os.environ.get('PER_PAGE', 6)
+PER_PAGES = int(os.environ.get('PER_PAGE', 6))
+# print(PER_PAGES)
+# print(type(PER_PAGES))
 
 
 def home(request):

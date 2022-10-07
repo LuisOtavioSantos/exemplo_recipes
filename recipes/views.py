@@ -1,5 +1,6 @@
 import os
 
+from django.contrib import messages
 from django.db.models import Q
 from django.http import Http404
 from django.shortcuts import get_list_or_404, get_object_or_404, render
@@ -20,6 +21,10 @@ def home(request):
     # paginator recebe as receitas filtradas no model Recipes
     page_obj, pagination_range = make_pagination(
         request=request, recipes=recipes, perpage=PER_PAGES)
+
+    # if request.GET.get('show'):
+    #     messages.success(request=request, message='Load Success')
+
     return render(request, 'recipes/pages/home.html', context={
         'recipes': page_obj,
         'pagination_range': pagination_range,
@@ -67,6 +72,9 @@ def search(request):
         ),
         is_published=True
     ).order_by('id')
+
+    messages.success(request=request, message='Load Success')
+
     page_obj, pagination_range = make_pagination(
         request=request, recipes=recipes, perpage=PER_PAGES)
     return render(request=request, template_name='recipes/pages/search.html',

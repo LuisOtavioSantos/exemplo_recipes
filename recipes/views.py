@@ -22,8 +22,10 @@ def home(request):
     page_obj, pagination_range = make_pagination(
         request=request, recipes=recipes, perpage=PER_PAGES)
 
-    # if request.GET.get('show'):
-    #     messages.success(request=request, message='Load Success')
+    if request.GET.get('show'):
+        messages.success(request=request, message='Load Success')
+        messages.error(request=request, message='Load Success')
+        messages.info(request=request, message='Load Success')
 
     return render(request, 'recipes/pages/home.html', context={
         'recipes': page_obj,

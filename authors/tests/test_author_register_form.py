@@ -89,3 +89,35 @@ class AuthorRegisterFormIntegrationTest(DjangoTestCase):
         msg = 'Username must have 150 max length'
         self.assertIn(msg, response.content.decode('utf-8'))
         self.assertIn(msg, response.context['form'].errors.get('username'))
+
+    def test_password_field_have_lower_upper_case_letters_and_numbers(self):
+        self.form_data['password'] = 'k123'
+        url = reverse(viewname='authors:create')
+        response = self.client.post(path=url, data=self.form_data, follow=True)
+        msg = ('Password must have at least one uppercase letter,'
+               'one lowercase letter and one number. The Length should be '
+               'at least 8 characters')
+        self.assertIn(msg, response.content.decode('utf-8'))
+        self.assertIn(msg, response.context['form'].errors.get('password'))
+        # teste positivo
+        self.form_data['password'] = 'k@Abc123'
+        url = reverse(viewname='authors:create')
+        response = self.client.post(path=url, data=self.form_data, follow=True)
+        # se estiver correto não vai aparecer msg de erro
+        self.assertNotIn(msg, response.context['form'].errors.get('password'))
+
+    def test_passwords_fields_matches(self):
+        self.form_data['password'] = 'Abk12348'
+        self.form_data['password2'] = 'Abk123489'
+        url = reverse(viewname='authors:create')
+        response = self.client.post(path=url, data=self.form_data, follow=True)
+        msg = 'Password not equal'
+        self.assertIn(msg, response.content.decode('utf-8'))
+        self.assertIn(msg, response.context['form'].errors.get('password'))
+        # teste positivo
+        self.form_data['password'] = '@Abk123456'
+        self.form_data['password2'] = '@Abk123456'
+        url = reverse(viewname='authors:create')
+        response = self.client.post(path=url, data=self.form_data, follow=True)  # noqa E401
+        # # se estiver correto não vai aparecer msg de erro
+        self.assertNotIn(msg, response.content.decode('utf-8'))

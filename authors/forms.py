@@ -7,11 +7,6 @@ from django.forms import ValidationError
 #  from django.forms import Form, ModelForm
 
 
-def add_attr(field, attr_name, attr_new_val):
-    existing_attr = field.widget.attrs.get(attr_name, '')
-    field.widget.attrs[attr_name] = f'{existing_attr} - {attr_new_val}'.strip
-
-
 def change_attr(field, attr_name, attr_new_val):
     field.widget.attrs[attr_name] = f'{attr_new_val}'
 

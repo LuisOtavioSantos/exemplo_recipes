@@ -1,3 +1,5 @@
+import re
+
 from django import forms
 from django.contrib.auth.models import User
 from django.forms import ValidationError
@@ -18,6 +20,16 @@ def change_placeholder(field, placeholder_val):
     change_attr(field, 'placeholder', placeholder_val)
 
 
+def strong_password(password):
+    regex = re.compile(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{8,}$')
+    if not regex.match(password):
+        raise ValidationError(
+            message='Password must have at least one uppercase letter,'
+            'one lowercase letter and one number. The Length should be '
+            'at least 8 characters', code='invalid'
+        )
+
+
 class FormRegister(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -28,6 +40,21 @@ class FormRegister(forms.ModelForm):
         change_placeholder(
             field=self.fields['email'], placeholder_val='Write email Here !!!')
 
+    password = forms.CharField(
+        required=True,
+        widget=forms.PasswordInput(
+            attrs={
+                'placeholder': 'Confirm your password'
+            }
+        ),
+        error_messages={
+            'required': 'This Field must not be empty'
+        },
+        help_text=(
+            'Password must have one lower case letter and one number'
+        ),
+        validators=[strong_password]
+    )
     password2 = forms.CharField(
         required=True,
         widget=forms.PasswordInput(
@@ -39,7 +66,7 @@ class FormRegister(forms.ModelForm):
             'required': 'This Field must not be empty'
         },
         help_text=(
-            'Passowrd must have one lower case letter and one number'
+            'Password must have one lower case letter and one number'
         )
     )
 
@@ -77,9 +104,9 @@ class FormRegister(forms.ModelForm):
             'email': forms.TextInput(attrs={
                 'placeholder': 'Type e-mail Here'
             }),
-            'password': forms.PasswordInput(attrs={
-                'placeholder': 'Type Password Here'
-            }),
+            'password': forms.PasswordInput(
+                attrs={'placeholder': 'Type Password Here'},
+            ),
         }
 
     def clean_password(self):
@@ -89,7 +116,7 @@ class FormRegister(forms.ModelForm):
             raise ValidationError(
                 message='Do not type %(value)s in password',
                 code='invalid',
-                params={'value': 'atenção'}
+                params={'value': 'atenção'},
             )
 
         return data

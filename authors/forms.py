@@ -55,7 +55,8 @@ class FormRegister(forms.ModelForm):
         help_text=(
             'Password must have one lower case letter and one number'
         ),
-        validators=[strong_password]
+        validators=[strong_password],
+        label='Create a password'
     )
     password2 = forms.CharField(
         required=True,
@@ -65,7 +66,8 @@ class FormRegister(forms.ModelForm):
         },
         help_text=(
             'Password must have one lower case letter and one number'
-        )
+        ),
+        label='Type password again'
     )
 
     class Meta:
@@ -84,35 +86,10 @@ class FormRegister(forms.ModelForm):
             'last_name': 'Last Name',
             'username': 'Type a Username',
             'email': 'best email',
-            'password': 'Create a password',
         }
         help_texts = {
             'email': 'The e-mail must be valid',
         }
-
-    def clean_password(self):
-        data = self.cleaned_data.get('password')
-
-        if 'atenção' in data:
-            raise ValidationError(
-                message='Do not type %(value)s in password',
-                code='invalid',
-                params={'value': 'atenção'},
-            )
-
-        return data
-
-    def clean_first_name(self):
-        data = self.cleaned_data.get('first_name')
-
-        if 'Luis' in data:
-            raise ValidationError(
-                message='Do not type %(value)s in first name',
-                code='invalid',
-                params={'value': 'Luis'}
-            )
-
-        return data
 
     def clean(self):
         cleaned_data = super().clean()

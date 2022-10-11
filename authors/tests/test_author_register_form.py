@@ -23,6 +23,7 @@ class AuthorRegisterFormUnitTest(TestCase):
 
     @parameterized.expand([
         ('email', 'The e-mail must be valid'),
+        ('username', 'nickname between 4 and 150 characters'),
         ('password', 'Password must have one lower case letter and one number'),  # noqa E501
         ('password2', 'Password must have one lower case letter and one number'),  # noqa E501
     ])
@@ -34,8 +35,8 @@ class AuthorRegisterFormUnitTest(TestCase):
     @parameterized.expand([
         ('first_name', 'First Name'),
         ('last_name', 'Last Name'),
-        ('username', 'Type a Username'),
-        ('email', 'best email'),
+        ('username', 'Username'),
+        ('email', 'email'),
         ('password', 'Create a password'),
         ('password2', 'Type password again'),
     ])
@@ -58,10 +59,33 @@ class AuthorRegisterFormIntegrationTest(DjangoTestCase):
         return super().setUp(*args, **kwargs)
 
     @parameterized.expand([
-        ('username', 'This field must not be empty')
+        ('username', 'This field must not be empty'),
+        ('first_name', 'Write your first name'),
+        ('last_name', 'Write your last name'),
+        ('email', 'Email is required'),
     ])
     def test_fields_cannot_be_empty(self, field, msg):
         self.form_data[field] = ''
         url = reverse(viewname='authors:create')
         response = self.client.post(path=url, data=self.form_data, follow=True)  # noqa F481
+        keys = response.context.keys()
+        print(keys)
         self.assertIn(msg, response.content.decode('utf-8'))
+        self.assertIn(msg, response.context['form'].errors.get(field))
+
+    def test_username_field_is_more_than_4(self):
+        self.form_data['username'] = 'chi'
+        url = reverse(viewname='authors:create')
+        response = self.client.post(path=url, data=self.form_data, follow=True)
+        msg = 'Username must have more than 4 characters'
+        self.assertIn(msg, response.content.decode('utf-8'))
+        self.assertIn(msg, response.context['form'].errors.get('username'))
+        # self.assertEqual(response.status_code, 404)
+
+    def test_username_field_is_less_than_150(self):
+        self.form_data['username'] = 'k'*151
+        url = reverse(viewname='authors:create')
+        response = self.client.post(path=url, data=self.form_data, follow=True)
+        msg = 'Username must have 150 max length'
+        self.assertIn(msg, response.content.decode('utf-8'))
+        self.assertIn(msg, response.context['form'].errors.get('username'))

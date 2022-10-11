@@ -47,6 +47,17 @@ class FormRegister(forms.ModelForm):
         change_placeholder(
             field=self.fields['last_name'], placeholder_val='Type your Last Name Here !!!')  # noqa E501
 
+    username = forms.CharField(
+        label='Username',
+        help_text='nickname between 4 and 150 characters',
+        error_messages={
+            'required': 'This field must not be empty',
+            'min_length': 'Username must have more than 4 characters',
+            'max_length': 'Username must have 150 max length',
+        },
+        min_length=4, max_length=150,
+
+    )
     password = forms.CharField(
         required=True,
         widget=forms.PasswordInput(),
@@ -59,6 +70,7 @@ class FormRegister(forms.ModelForm):
         validators=[strong_password],
         label='Create a password'
     )
+
     password2 = forms.CharField(
         required=True,
         widget=forms.PasswordInput(),
@@ -71,6 +83,33 @@ class FormRegister(forms.ModelForm):
         label='Type password again'
     )
 
+    first_name = forms.CharField(
+        error_messages={
+            'required': 'Write your first name'
+        },
+        required=True,
+        label='First Name'
+    )
+
+    last_name = forms.CharField(
+        error_messages={
+            'required': 'Write your last name'
+        },
+        required=True,
+        label='Last Name'
+    )
+
+    email = forms.CharField(
+        error_messages={
+            'required': 'Email is required'
+        },
+        required=True,
+        label='email',
+        help_text=(
+            'The e-mail must be valid'
+        )
+    )
+
     class Meta:
         model = User
         fields = [
@@ -80,22 +119,6 @@ class FormRegister(forms.ModelForm):
             'email',
             'password',
         ]
-        # ou
-        # exclude = ['first_name']
-        labels = {
-            'first_name': 'First Name',
-            'last_name': 'Last Name',
-            'username': 'Type a Username',
-            'email': 'best email',
-        }
-        help_texts = {
-            'email': 'The e-mail must be valid',
-        }
-        error_messages = {
-            'username': {
-                'required': 'This field must not be empty',
-            }
-        }
 
     def clean(self):
         cleaned_data = super().clean()

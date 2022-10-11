@@ -87,21 +87,35 @@ class FormRegister(forms.ModelForm):
 
         if 'atenção' in data:
             raise ValidationError(
-                message='Não digite %(value)s no password',
+                message='Do not type %(value)s in password',
                 code='invalid',
                 params={'value': 'atenção'}
             )
 
         return data
 
-    def clean_fisrt_name(self):
+    def clean_first_name(self):
         data = self.cleaned_data.get('first_name')
 
         if 'Luis' in data:
             raise ValidationError(
-                message='Não digite %(value)s no password',
+                message='Do not type %(value)s in first name',
                 code='invalid',
                 params={'value': 'Luis'}
             )
 
         return data
+
+    def clean(self):
+        cleaned_data = super().clean()
+        password = cleaned_data.get('password')
+        password2 = cleaned_data.get('password2')
+
+        if password != password2:
+            raise ValidationError({
+                'password': ValidationError(
+                    message='Password not equal',
+                    code='invalid'
+                ),
+                'password2': ['Passwords must match', 'test']
+            })

@@ -22,6 +22,7 @@ def change_placeholder(field, placeholder_val):
 
 def strong_password(password):
     regex = re.compile(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{8,}$')
+
     if not regex.match(password):
         raise ValidationError(
             message='Password must have at least one uppercase letter,'
@@ -50,7 +51,7 @@ class FormRegister(forms.ModelForm):
         required=True,
         widget=forms.PasswordInput(),
         error_messages={
-            'required': 'This Field must not be empty'
+            'required': 'This field must not be empty'
         },
         help_text=(
             'Password must have one lower case letter and one number'
@@ -62,7 +63,7 @@ class FormRegister(forms.ModelForm):
         required=True,
         widget=forms.PasswordInput(),
         error_messages={
-            'required': 'This Field must not be empty'
+            'required': 'This field must not be empty'
         },
         help_text=(
             'Password must have one lower case letter and one number'
@@ -89,6 +90,11 @@ class FormRegister(forms.ModelForm):
         }
         help_texts = {
             'email': 'The e-mail must be valid',
+        }
+        error_messages = {
+            'username': {
+                'required': 'This field must not be empty',
+            }
         }
 
     def clean(self):

@@ -52,7 +52,7 @@ class AuthorRegisterFormIntegrationTest(DjangoTestCase):
             'username': 'user',
             'first_name': 'first',
             'last_name': 'last',
-            'email': 'email@email.com',
+            'email': 'email@gmail.com',
             'password': 'Abc12345678',
             'password2': 'Abc12345678',
         }
@@ -126,3 +126,21 @@ class AuthorRegisterFormIntegrationTest(DjangoTestCase):
         url = reverse(viewname='authors:create')
         response = self.client.get(path=url)
         self.assertEqual(first=response.status_code, second=404)
+
+    def test_password_confirmation_matches(self):
+        url = reverse('authors:create')
+
+        self.form_data['email'] = 'email@gmail.com'
+
+        self.client.post(
+            path=url, data=self.form_data, follow=True)
+
+        self.form_data['email'] = 'email@gmail.com'
+
+        response2 = self.client.post(
+            path=url, data=self.form_data, follow=True)
+
+        msg = 'User e-mail is already in use'
+
+        self.assertIn(msg, response2.context['form'].errors.get('email'))
+        self.assertIn(msg, response2.content.decode('utf-8'))

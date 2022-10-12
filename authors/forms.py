@@ -22,7 +22,8 @@ def strong_password(password):
         raise ValidationError(
             message='Password must have at least one uppercase letter,'
             'one lowercase letter and one number. The Length should be '
-            'at least 8 characters', code='invalid'
+            'at least 8 characters',
+            code='invalid'
         )
 
 
@@ -114,6 +115,17 @@ class FormRegister(forms.ModelForm):
             'email',
             'password',
         ]
+
+    def clean_email(self):
+        email = self.cleaned_data.get('email', '')
+        exists = User.objects.filter(email=email).exists()
+
+        if exists:
+            raise ValidationError(
+                'User e-mail is already in use', code='invalid',
+            )
+
+        return email
 
     def clean(self):
         cleaned_data = super().clean()

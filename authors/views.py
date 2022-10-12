@@ -23,9 +23,10 @@ def register_create(request):
     request.session['register_form_data'] = POST
     form = FormRegister(POST)  # noqa F841
     if form.is_valid():
-        form.save()
-        # data = form.save(commit=False)
-        # data.outro_campo = 'outro valor'
+        # form.save() # salva sem criptografar a senha
+        user = form.save(commit=False)
+        user.set_password(user.password)
+        user.save()
         messages.success(
             request=request, message='User created! \nLogin Available.')
         del (request.session['register_form_data'])

@@ -15,7 +15,7 @@ def register_view(request):
                   template_name='authors/pages/register_view.html',
                   context={
                       'form': form,
-                      'form_action': reverse(viewname='authors:create')
+                      'form_action': reverse(viewname='authors:register_create')  # noqa E501
                   })
 
 
@@ -35,3 +35,11 @@ def register_create(request):
             request=request, message='User created! \nLogin Available.')
         del (request.session['register_form_data'])
     return redirect(to='authors:register')
+
+
+def login_view(request):
+    return render(request=request, template_name='authors/pages/login.html')
+
+
+def login_create(request):
+    return render(request=request, template_name='authors/pages/login.html')

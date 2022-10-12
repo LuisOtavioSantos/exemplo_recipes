@@ -33,15 +33,10 @@ def make_pagination_range(page_range,
 def make_pagination(request, recipes, perpage, qty_pages=4):
     try:
         current_page = int(request.GET.get('page', 1))
-    except Exception as e:
+    except ValueError:
         current_page = 1
-        print(e)
     paginator = Paginator(object_list=recipes, per_page=perpage)
-    try:
-        # Aqui os dois casam a response da request com o paginator
-        page_obj = paginator.get_page(current_page)
-    except (EmptyPage, InvalidPage):
-        page_obj = paginator.page(paginator.num_pages)
+    page_obj = paginator.get_page(current_page)
 
     pagination_range = make_pagination_range(
         page_range=paginator.page_range,

@@ -121,3 +121,8 @@ class AuthorRegisterFormIntegrationTest(DjangoTestCase):
         response = self.client.post(path=url, data=self.form_data, follow=True)  # noqa E401
         # # se estiver correto não vai aparecer msg de erro
         self.assertNotIn(msg, response.content.decode('utf-8'))
+
+    def test_register_create_view_returns_404_if_request_is_not_post(self):  # noqa E401
+        url = reverse(viewname='authors:create')
+        response = self.client.get(path=url)
+        self.assertEqual(first=response.status_code, second=404)

@@ -1,5 +1,6 @@
 from django.contrib import messages
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 from django.http import Http404
 from django.shortcuts import redirect, render
 from django.urls import reverse
@@ -28,14 +29,16 @@ def register_create(request):
     request.session['register_form_data'] = POST
     form = FormRegister(POST)  # noqa F841
     if form.is_valid():
-        # form.save() # salva sem criptografar a senha
+        # form.save() # save without encripting
         user = form.save(commit=False)
         user.set_password(user.password)
         user.save()
         messages.success(
-            request=request, message='User created! \nLogin Available.')
+            request=request, message='User created! Login Available.')
         del (request.session['register_form_data'])
-    return redirect(to='authors:register')
+        return redirect(to='authors:login')
+    else:
+        return redirect(to='authors:register')
 
 
 def login_view(request):
@@ -72,3 +75,15 @@ def login_create(request):
         messages.error(request=request, message='Invalid Password or Username')
 
     return redirect(to=login_url)
+
+
+@login_required(login_url='authors:login', redirect_field_name='next')
+def logout_view(request):
+    if not request.POST:
+        return redirect(to='authors:login')
+
+    if request.POST.get('username') != request.user.username:
+        return redirect(to='authors:login')
+
+    logout(request)
+    return redirect(to='authors:login')

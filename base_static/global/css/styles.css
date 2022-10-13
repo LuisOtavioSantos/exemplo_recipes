@@ -424,3 +424,18 @@ h6 {
   background: var(--color-primary-dark);
   color: var(--color-white);
 }
+
+
+.plaintext-button {
+  display: inline;
+  border: None;
+  background: None;
+  cursor: pointer;
+  color: var(--color-primary);
+  font-size: 1.6rem;
+}
+
+.inline-form {
+  display: inline;
+  font-size: 1.6rem;
+}

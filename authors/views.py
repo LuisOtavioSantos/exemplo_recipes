@@ -1,9 +1,10 @@
 from django.contrib import messages
+from django.contrib.auth import authenticate, login
 from django.http import Http404
 from django.shortcuts import redirect, render
 from django.urls import reverse
 
-from .forms import FormRegister
+from .forms import FormLogin, FormRegister
 
 # Create your views here.
 
@@ -38,8 +39,36 @@ def register_create(request):
 
 
 def login_view(request):
-    return render(request=request, template_name='authors/pages/login.html')
+    form = FormLogin()
+    return render(request=request,
+                  template_name='authors/pages/login.html',
+                  context={
+                      'form': form,
+                      'form_action': reverse(viewname='authors:login_create')
+                  })
 
 
 def login_create(request):
-    return render(request=request, template_name='authors/pages/login.html')
+    if not request.POST:
+        raise Http404()
+
+    login_url = reverse(viewname='authors:login')
+    form = FormLogin(request.POST)
+    if form.is_valid():
+        authenticated_user = authenticate(
+            request=request,
+            username=form.cleaned_data.get('username', ''),
+            password=form.cleaned_data.get('password', ''),
+        )
+        if authenticated_user is not None:
+            messages.success(
+                request=request,
+                message='You Are Logged In'
+            )
+            login(request=request, user=authenticated_user)
+        else:
+            messages.error(request=request, message='Invalid Credentials')
+    else:
+        messages.error(request=request, message='Invalid Password or Username')
+
+    return redirect(to=login_url)

@@ -17,7 +17,7 @@ class RecipeHomePageFunctionalTest(RecipeBaseFunctionalTest):
 
     @patch('recipes.views.PER_PAGES', new=2)
     def test_recipe_search_can_find_correct_recipe(self):
-        recipes = self.make_recipe_batch(qtd=4)
+        recipes = self.make_recipe_batch(qtd=6)
         new_title = 'Bolo de Coco'
         recipes[0].title = new_title
         recipes[0].save()
@@ -31,8 +31,33 @@ class RecipeHomePageFunctionalTest(RecipeBaseFunctionalTest):
         search_input.send_keys(new_title)
         search_input.send_keys(Keys.ENTER)
 
+        # self.assertIn(
+        #     new_title,
+        #     self.browser.find_element(By.TAG_NAME, 'body').text
+        # )
         self.assertIn(
             new_title,
-            self.browser.find_element(By.TAG_NAME, 'body').text
+            self.browser.find_element(By.CLASS_NAME, 'main-content-list').text
         )
         self.sleep()
+
+    @patch('recipes.views.PER_PAGES', new=2)
+    def test_recipe_home_page_pagination(self):
+        self.make_recipe_batch(qtd=4)
+
+        # opens the main page
+        self.browser.get(self.live_server_url)
+
+        # selects a page
+        page2 = self.browser.find_element(
+            By.XPATH,
+            '//a[@aria-label="Go to page 2"]'
+            # '//tag[@campo="text to be find"]'
+        )
+        self.sleep()
+        page2.click()
+        # assert number of elements in page 2
+        self.assertEqual(
+            first=len(self.browser.find_elements(By.CLASS_NAME, 'recipe')),
+            second=2
+        )

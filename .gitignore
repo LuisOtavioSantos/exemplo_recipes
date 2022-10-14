@@ -131,3 +131,6 @@ _local_settings.py
 
 # coverage
 htmlcov
+
+# webdriver
+bin

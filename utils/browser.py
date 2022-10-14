@@ -23,7 +23,7 @@ def make_chrome_browser(*options):
 
     chrome_service = Service(executable_path=str(CHROMEDRIVER_PATH))
     browser = webdriver.Chrome(
-        service=chrome_service, chrome_options=chrome_options)
+        service=chrome_service, options=chrome_options)
     return browser
 
 

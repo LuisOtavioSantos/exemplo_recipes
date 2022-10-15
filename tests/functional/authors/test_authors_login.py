@@ -26,8 +26,20 @@ class AuthorsLoginTest(AuthorBaseTest):
         username_field.send_keys(user.username)
         password_field.send_keys('Abc12345')
         form.submit()
-        self.sleep()
+        self.sleep(1)
         # assertion
         self.assertIn(member=f'You Are Logged As {user.username}',  # noqa E501
         container=self.browser.find_element(by=By.TAG_NAME, value='body').text)  # noqa E501
         # end test
+
+    def test_login_create_raises_404_if_not_POST_method(self):
+        url = reverse('authors:login_create')
+        self.browser.get(self.live_server_url + url)
+        self.sleep(1)
+        self.assertIn(
+            member='Not Found',
+            container=self.browser.find_element(
+                by=By.TAG_NAME,
+                value='body'
+            ).text
+        )

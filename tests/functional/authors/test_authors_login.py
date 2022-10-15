@@ -43,3 +43,59 @@ class AuthorsLoginTest(AuthorBaseTest):
                 value='body'
             ).text
         )
+
+    def test_form_login_is_invalid_if_credentials_empty(self):
+        # opens the page
+        url = reverse('authors:login')
+        self.browser.get(self.live_server_url + url)
+
+        # get the form/ identify the form
+        form = self.browser.find_element(by=By.CLASS_NAME, value='main-form')
+        username_field = self.get_by_placeholder(
+            web_element=form, placeholder='Type your username')
+        password_field = self.get_by_placeholder(
+            web_element=form, placeholder='Type your password')
+
+        # try to send empty inputs in login form
+        username_field.send_keys(' '*7)
+        password_field.send_keys(' '*7)
+
+        # # submit the form
+        form.submit()
+
+        self.sleep()
+        self.assertIn(
+            member='Invalid Password or Username',
+            container=self.browser.find_element(
+                by=By.TAG_NAME,
+                value='body'
+            ).text
+        )
+
+    def test_form_login_is_invalid_if_wrong_credentials(self):
+        # opens the page
+        url = reverse('authors:login')
+        self.browser.get(self.live_server_url + url)
+
+        # get the form/ identify the form
+        form = self.browser.find_element(by=By.CLASS_NAME, value='main-form')
+        username_field = self.get_by_placeholder(
+            web_element=form, placeholder='Type your username')
+        password_field = self.get_by_placeholder(
+            web_element=form, placeholder='Type your password')
+
+        # try to send empty inputs in login form
+        username_field.send_keys('*'*7)
+        password_field.send_keys('*'*7)
+
+        # # submit the form
+        form.submit()
+
+        self.sleep()
+        self.assertIn(
+            member='Invalid Credentials',
+            container=self.browser.find_element(
+                by=By.TAG_NAME,
+                value='body'
+            ).text
+        )

@@ -439,3 +439,9 @@ h6 {
   display: inline;
   font-size: 1.6rem;
 }
+
+
+/* Authors */
+.login-message {
+  margin: 1rem 0;
+}

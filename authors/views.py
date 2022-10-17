@@ -6,6 +6,8 @@ from django.shortcuts import redirect, render
 from django.urls import reverse
 from recipes.models import Recipe
 
+from authors.forms.recipe_form import AuthorRecipeForm
+
 from .forms import FormLogin, FormRegister
 
 # Create your views here.
@@ -112,10 +114,16 @@ def dashboard_recipe_edit(request, id):
         is_published=False,
         author=request.user,
         pk=id
-    )
+    ).first()
     if not recipe:
         raise Http404()
+    form = AuthorRecipeForm(
+        data=request.POST or None,
+        instance=recipe
+    )
     return render(
         request=request,
         template_name='authors/pages/dashboard_recipe.html',
-        context={'recipe': recipe})
+        context={
+            'form': form
+        })
